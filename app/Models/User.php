@@ -38,19 +38,19 @@ class User extends Authenticatable
     protected $appends = ['avatar_url'];
 
     public function getAvatarUrlAttribute(): string
-{
-    if (!$this->avatar) {
+    {
+        if (!$this->avatar) {
+            return asset('images/blankpfp.jpg');
+        }
+
+        $path = 'uploads/' . $this->avatar;
+
+        if (Storage::disk('s3')->exists($path)) {
+            return Storage::disk('s3')->url($path);
+        }
+
         return asset('images/blankpfp.jpg');
     }
-
-    $path = 'uploads/' . $this->avatar;
-
-    if (Storage::disk('public')->exists($path)) {
-        return asset('storage/' . $path) . '?v=' . Storage::disk('public')->lastModified($path);
-    }
-
-    return asset('images/blankpfp.jpg');
-}
     public function isOnline(): bool
     {
         if ($this->status !== 'active') {

@@ -62,14 +62,14 @@ class ProfileController extends Controller
 
         $user = Auth::user();
 
-        if ($user->avatar && Storage::disk('public')->exists('uploads/' . $user->avatar)) {
-            Storage::disk('public')->delete('uploads/' . $user->avatar);
+        if ($user->avatar && Storage::disk('s3')->exists('uploads/' . $user->avatar)) {
+            Storage::disk('s3')->delete('uploads/' . $user->avatar);
         }
 
         $file     = $request->file('avatar');
         $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
-        $file->storeAs('uploads', $filename, 'public');
+        $file->storeAs('uploads', $filename, 's3');
 
         $user->avatar = $filename;
         $user->save();
@@ -81,8 +81,8 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->avatar && Storage::disk('public')->exists('uploads/' . $user->avatar)) {
-            Storage::disk('public')->delete('uploads/' . $user->avatar);
+        if ($user->avatar && Storage::disk('s3')->exists('uploads/' . $user->avatar)) {
+            Storage::disk('s3')->delete('uploads/' . $user->avatar);
         }
 
         $user->avatar = null;
